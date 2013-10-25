@@ -7,7 +7,9 @@ int main() {
 		EnumWindows(EnumWindowsProc, NULL);
 		if (now_playing != _now_playing) {
 			_now_playing = now_playing;
-			cout << now_playing.c_str() << endl;
+			//cout << now_playing.c_str() << endl;
+			//cout << "writing title to: " << ExePath() << endl;
+			writeToFile(now_playing);
 		}
 	}
 	return 0;
@@ -32,4 +34,18 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam) {
 string toString(LPSTR chr) {
 	string str(chr);
 	return str.c_str();
+}
+
+string ExePath() {
+    char buffer[MAX_PATH];
+    GetModuleFileName( NULL, buffer, MAX_PATH );
+    string::size_type pos = string( buffer ).find_last_of( "\\/" );
+    return string( buffer ).substr( 0, pos);
+}
+
+void writeToFile(string title) {
+	string file_name = ExePath() + "\\spotify_now_playing.txt";
+	ofstream file(file_name);
+	file << title;
+	file.close();
 }
